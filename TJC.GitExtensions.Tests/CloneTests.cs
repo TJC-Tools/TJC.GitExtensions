@@ -23,7 +23,13 @@ namespace TJC.GitExtensions.Tests
             {
                 if (Directory.Exists(clonePath))
                 {
-                    foreach (var file in Directory.EnumerateFiles(clonePath, "*", SearchOption.AllDirectories))
+                    foreach (
+                        var file in Directory.EnumerateFiles(
+                            clonePath,
+                            "*",
+                            SearchOption.AllDirectories
+                        )
+                    )
                     {
                         File.SetAttributes(file, FileAttributes.Normal);
                     }

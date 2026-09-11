@@ -5,6 +5,8 @@ namespace TJC.GitExtensions.Tests
     [TestClass]
     public class ChangesTests
     {
+        private static readonly string[] expected = new[] { " M file.txt" };
+
         [TestMethod]
         public void GetChangesListReturnsWorkingTreeChanges()
         {
@@ -13,8 +15,9 @@ namespace TJC.GitExtensions.Tests
             File.AppendAllText(Path.Combine(repository.Path, "file.txt"), "changed");
 
             CollectionAssert.AreEqual(
-                new[] { " M file.txt" },
-                GitExtensions.GetChangesList(repository.Path));
+                expected,
+                GitExtensions.GetChangesList(repository.Path)
+            );
         }
     }
 }

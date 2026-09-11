@@ -2,7 +2,10 @@ namespace TJC.GitExtensions;
 
 public static partial class GitExtensions
 {
-    public static GitRepositoryInfo GetInformation(string workingDirectory = ".", GitCommandSettings? settings = null)
+    public static GitRepositoryInfo GetInformation(
+        string workingDirectory = ".",
+        GitCommandSettings? settings = null
+    )
     {
         var describe = RunGit(
             workingDirectory,
@@ -11,7 +14,8 @@ public static partial class GitExtensions
             "--tags",
             "--always",
             "--long",
-            "--abbrev=40");
+            "--abbrev=40"
+        );
         var status = RunGit(workingDirectory, settings, "status", "--short");
         var description = ParseDescription(describe);
 
@@ -23,8 +27,7 @@ public static partial class GitExtensions
             Patch = GetVersionPart(description.VersionMatch, "patch"),
             IsDirty = !string.IsNullOrWhiteSpace(status),
             CommitHash = description.CommitHash,
-            DistanceToLatestTag = description.DistanceToLatestTag
+            DistanceToLatestTag = description.DistanceToLatestTag,
         };
     }
-
 }

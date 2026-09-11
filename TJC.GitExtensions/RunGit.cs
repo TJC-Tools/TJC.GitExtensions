@@ -12,12 +12,18 @@ public static partial class GitExtensions
     private static string RunGit(
         string workingDirectory,
         GitCommandSettings? settings,
-        params string[] arguments)
+        params string[] arguments
+    )
     {
         settings ??= new GitCommandSettings();
         var directories = GetRunDirectories(workingDirectory, settings.RunType);
-        var outputs = directories.Select(directory => RunGitOnce(directory, settings.DryRun, arguments));
-        return string.Join(Environment.NewLine, outputs.Where(output => !string.IsNullOrEmpty(output)));
+        var outputs = directories.Select(directory =>
+            RunGitOnce(directory, settings.DryRun, arguments)
+        );
+        return string.Join(
+            Environment.NewLine,
+            outputs.Where(output => !string.IsNullOrEmpty(output))
+        );
     }
 
     private static string RunGitOnce(string workingDirectory, bool dryRun, string[] arguments)
@@ -34,8 +40,8 @@ public static partial class GitExtensions
                 RedirectStandardOutput = true,
                 RedirectStandardError = true,
                 UseShellExecute = false,
-                CreateNoWindow = true
-            }
+                CreateNoWindow = true,
+            },
         };
 
         foreach (var argument in commandArguments)
@@ -51,13 +57,17 @@ public static partial class GitExtensions
         if (process.ExitCode != 0)
         {
             throw new InvalidOperationException(
-                $"git {string.Join(' ', commandArguments)} failed: {error.Trim()}");
+                $"git {string.Join(' ', commandArguments)} failed: {error.Trim()}"
+            );
         }
 
         return output.TrimEnd();
     }
 
-    private static IReadOnlyList<string> GetRunDirectories(string workingDirectory, GitCommandRunType runType)
+    private static IReadOnlyList<string> GetRunDirectories(
+        string workingDirectory,
+        GitCommandRunType runType
+    )
     {
         var parentDirectory = Path.GetFullPath(workingDirectory);
         var directories = new List<string>();
@@ -99,9 +109,15 @@ public static partial class GitExtensions
             var paths = RunGitOnce(
                 currentDirectory,
                 dryRun: false,
-                new[] { "config", "--file", ".gitmodules", "--get-regexp", "path" });
+                new[] { "config", "--file", ".gitmodules", "--get-regexp", "path" }
+            );
 
-            foreach (var path in paths.Split(new[] { "\r\n", "\n" }, StringSplitOptions.RemoveEmptyEntries))
+            foreach (
+                var path in paths.Split(
+                    new[] { "\r\n", "\n" },
+                    StringSplitOptions.RemoveEmptyEntries
+                )
+            )
             {
                 var separatorIndex = path.IndexOfAny(new[] { ' ', '\t' });
                 if (separatorIndex < 0)
@@ -110,7 +126,8 @@ public static partial class GitExtensions
                 }
 
                 var submoduleDirectory = Path.GetFullPath(
-                    Path.Combine(currentDirectory, path[(separatorIndex + 1)..].Trim()));
+                    Path.Combine(currentDirectory, path[(separatorIndex + 1)..].Trim())
+                );
                 if (Directory.Exists(submoduleDirectory))
                 {
                     directories.Add(submoduleDirectory);

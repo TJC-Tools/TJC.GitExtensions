@@ -24,7 +24,8 @@ namespace TJC.GitExtensions.Tests
             GitExtensions.Commit(
                 "dry run",
                 repository.Path,
-                new GitCommandSettings { DryRun = true });
+                new GitCommandSettings { DryRun = true }
+            );
 
             Assert.AreEqual(initialHash, GitExtensions.GetInformation(repository.Path).CommitHash);
             Assert.IsTrue(GitExtensions.GetInformation(repository.Path).IsDirty);
@@ -42,7 +43,8 @@ namespace TJC.GitExtensions.Tests
             GitExtensions.Commit(
                 "scoped commit",
                 repository.Path,
-                new GitCommandSettings { RunType = GitCommandRunType.ParentAndSubmodules });
+                new GitCommandSettings { RunType = GitCommandRunType.ParentAndSubmodules }
+            );
 
             Assert.IsFalse(GitExtensions.GetInformation(repository.Path).IsDirty);
             Assert.IsFalse(GitExtensions.GetInformation(submodulePath).IsDirty);

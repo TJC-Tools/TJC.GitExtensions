@@ -13,7 +13,10 @@ namespace TJC.GitExtensions.Tests
 
             GitExtensions.CreateTag("v1.0.0", repository.Path);
 
-            CollectionAssert.Contains(GitExtensions.GetTagList(workingDirectory: repository.Path), "v1.0.0");
+            CollectionAssert.Contains(
+                GitExtensions.GetTagList(workingDirectory: repository.Path),
+                "v1.0.0"
+            );
         }
     }
 }
