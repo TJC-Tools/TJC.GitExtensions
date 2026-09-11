@@ -1,0 +1,24 @@
+version: 2
+
+updates:
+  - package-ecosystem: github-actions
+    directory: "/"
+    commit-message:
+      prefix: "(dependabot)"
+    assignees:
+      - "TylerCarrol"
+    reviewers:
+      - "TylerCarrol"
+    schedule:
+      interval: monthly
+
+  - package-ecosystem: nuget
+    directory: "/"
+    commit-message:
+      prefix: "(dependabot)"
+    assignees:
+      - "TylerCarrol"
+    reviewers:
+      - "TylerCarrol"
+    schedule:
+      interval: monthly

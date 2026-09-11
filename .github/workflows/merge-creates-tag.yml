@@ -1,0 +1,89 @@
+# If the pull request was not merged; the run-name will be 'PR#123 - Closed without merging'
+# If labels does not contain 'major', 'minor', or 'patch'; the run-name will be 'PR#123 - Merged [No Increment Label Specified]'
+# Otherwise, if the pull request was merged the run-name will be 'PR#123 - Merged → Tag [patch]'
+---
+name: Pull Request Merge → Tag
+run-name: ${{ format('PR#{0} - {1}', github.event.number, !github.event.pull_request.merged && 'Closed without merging' || !contains(join(github.event.pull_request.labels.*.name, ', '), 'major') && !contains(join(github.event.pull_request.labels.*.name, ', '), 'minor') && !contains(join(github.event.pull_request.labels.*.name, ', '), 'patch') && 'Merged [No Increment Label Specified]' || format('Merged → Tag [{0}]', join(github.event.pull_request.labels.*.name, ', ')))  }}
+
+on:
+  pull_request:
+    types:
+      - closed
+    branches:
+      - main
+
+concurrency:
+  group: Versioning-${{ github.ref_name }}
+  cancel-in-progress: false
+
+jobs:
+  incrementVersion:
+    name: PR#[${{ github.event.number }}] Merge - Increment Version
+    permissions:
+      contents: write # Needed for pushing commits and tags
+      pull-requests: read # Needed to read pull request labels and metadata
+    if: github.event.pull_request.merged && (contains(join(github.event.pull_request.labels.*.name, ', '), 'major') || contains(join(github.event.pull_request.labels.*.name, ', '), 'minor') || contains(join(github.event.pull_request.labels.*.name, ', '), 'patch'))
+    runs-on: windows-2022
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.TJC_TOKEN || secrets.GITHUB_TOKEN }}
+          fetch-depth: 0
+
+      ##################
+      ### VERSIONING ###
+      ##################
+      # Get Version Increment Type (using labels to select whether to increment major, minor, or patch)
+      - name: Get Version Increment Type [${{ join(github.event.pull_request.labels.*.name, ', ') }}]
+        id: get-version-increment-type
+        uses: actions/github-script@v7.0.1
+        with:
+          result-encoding: string
+          script: |
+            var labels = "${{ join(github.event.pull_request.labels.*.name, ', ') }}"
+            var incrementType = "ERROR"
+            if (labels.includes("major")) {
+              incrementType = "major"
+            } else if (labels.includes("minor")) {
+              incrementType = "minor"
+            } else if (labels.includes("patch")) {
+              incrementType = "patch"
+            }
+            console.log('Increment Type:', incrementType)
+            return incrementType
+
+      #################
+      ### CHANGELOG ###
+      #################
+      - name: Bump Changelog Version [${{ steps.get-version-increment-type.outputs.result }}]
+        id: update-changelog
+        uses: release-flow/keep-a-changelog-action@v3
+        with:
+          command: bump
+          version: ${{ steps.get-version-increment-type.outputs.result }}
+          keep-unreleased-section: true
+
+      - name: Commit Changelog [${{ steps.update-changelog.outputs.version }}]
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git commit -a -m "🤖 automated: Changelog ${{ steps.update-changelog.outputs.version }}"
+          git remote set-url origin https://<PAT>@github.com/${{ github.repository }}.git
+          git push
+        env:
+          PAT: ${{ secrets.TJC_TOKEN }}
+
+      ##################
+      ### TAG & PUSH ###
+      ##################
+      - name: Tag Version [${{ steps.update-changelog.outputs.version }}]
+        run: |
+          git tag v${{ steps.update-changelog.outputs.version }}
+          git push origin tag v${{ steps.update-changelog.outputs.version }}
+
+      - name: Incremented Version [${{ steps.update-changelog.outputs.version }}]
+        if: success()
+        uses: ./.github/actions/tools/annotation/notice
+        with:
+          message: Incremented Version [${{ steps.update-changelog.outputs.version }}]
