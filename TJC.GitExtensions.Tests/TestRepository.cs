@@ -32,6 +32,21 @@ namespace TJC.GitExtensions.Tests
             Run("tag", tag);
         }
 
+        public void CreateBranch(string branch)
+        {
+            Run("branch", branch);
+        }
+
+        public void Checkout(string branch)
+        {
+            Run("checkout", branch);
+        }
+
+        public void SetUpstream(string branch)
+        {
+            Run("branch", "--set-upstream-to", branch);
+        }
+
         public void Dispose()
         {
             foreach (var file in Directory.EnumerateFiles(Path, "*", SearchOption.AllDirectories))

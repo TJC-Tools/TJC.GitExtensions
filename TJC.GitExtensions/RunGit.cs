@@ -35,6 +35,6 @@ public static partial class GitExtensions
                 $"git {string.Join(' ', arguments)} failed: {error.Trim()}");
         }
 
-        return output.Trim();
+        return output.TrimEnd();
     }
 }

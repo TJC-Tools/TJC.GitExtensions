@@ -10,3 +10,5 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Git status parsing for version, dirty, and other basic statuses.
+- Commands for committing, pulling, pushing, fetching, and reading branch divergence.
+- Commands for cloning, checking out and changing branches, listing changes and tags, and creating tags.
