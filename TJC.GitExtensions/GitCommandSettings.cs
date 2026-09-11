@@ -5,7 +5,7 @@ public enum GitCommandRunType
 {
     Parent = 0b_0000_0001,
     Submodules = 0b_0000_0010,
-    ParentAndSubmodules = Parent | Submodules
+    ParentAndSubmodules = Parent | Submodules,
 }
 
 public sealed class GitCommandSettings

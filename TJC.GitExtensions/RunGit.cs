@@ -6,18 +6,26 @@ public static partial class GitExtensions
 {
     private static string RunGit(string workingDirectory, params string[] arguments)
     {
-        return RunGitCommand(workingDirectory, settings: null, GitDryRunMode.None, arguments).StandardOutput;
+        return RunGitCommand(
+            workingDirectory,
+            settings: null,
+            GitDryRunMode.None,
+            arguments
+        ).StandardOutput;
     }
 
     private static GitCommandResult RunGitCommand(
         string workingDirectory,
         GitCommandSettings? settings,
         GitDryRunMode dryRunMode = GitDryRunMode.None,
-        params string[] arguments)
+        params string[] arguments
+    )
     {
         settings ??= new GitCommandSettings();
         var directories = GetRunDirectories(workingDirectory, settings.RunType);
-        var results = directories.Select(directory => RunGitOnce(directory, settings.DryRun, dryRunMode, arguments));
+        var results = directories.Select(directory =>
+            RunGitOnce(directory, settings.DryRun, dryRunMode, arguments)
+        );
         return CombineResults(results);
     }
 
@@ -25,11 +33,17 @@ public static partial class GitExtensions
         string workingDirectory,
         bool dryRun,
         GitDryRunMode dryRunMode,
-        string[] arguments)
+        string[] arguments
+    )
     {
-        var commandArguments = dryRun && dryRunMode == GitDryRunMode.Supported
-            ? arguments.Take(1).Concat(new[] { "--dry-run" }).Concat(arguments.Skip(1)).ToArray()
-            : arguments;
+        var commandArguments =
+            dryRun && dryRunMode == GitDryRunMode.Supported
+                ? arguments
+                    .Take(1)
+                    .Concat(new[] { "--dry-run" })
+                    .Concat(arguments.Skip(1))
+                    .ToArray()
+                : arguments;
         using var process = new Process
         {
             StartInfo = new ProcessStartInfo
@@ -39,8 +53,8 @@ public static partial class GitExtensions
                 RedirectStandardOutput = true,
                 RedirectStandardError = true,
                 UseShellExecute = false,
-                CreateNoWindow = true
-            }
+                CreateNoWindow = true,
+            },
         };
 
         foreach (var argument in commandArguments)
@@ -57,29 +71,44 @@ public static partial class GitExtensions
             process.ExitCode == 0,
             process.ExitCode,
             output.TrimEnd(),
-            error.TrimEnd());
+            error.TrimEnd()
+        );
         if (!result.Succeeded)
-            throw new InvalidOperationException($"git {string.Join(' ', commandArguments)} failed: {result.StandardError}");
+            throw new InvalidOperationException(
+                $"git {string.Join(' ', commandArguments)} failed: {result.StandardError}"
+            );
         return result;
     }
 
     private static string RunGitOnce(string workingDirectory, string[] arguments)
     {
-        return RunGitOnce(workingDirectory, dryRun: false, GitDryRunMode.None, arguments).StandardOutput;
+        return RunGitOnce(
+            workingDirectory,
+            dryRun: false,
+            GitDryRunMode.None,
+            arguments
+        ).StandardOutput;
     }
 
     private static string RunGit(
         string workingDirectory,
         GitCommandSettings? settings,
-        params string[] arguments)
+        params string[] arguments
+    )
     {
-        return RunGitCommand(workingDirectory, settings, GitDryRunMode.None, arguments).StandardOutput;
+        return RunGitCommand(
+            workingDirectory,
+            settings,
+            GitDryRunMode.None,
+            arguments
+        ).StandardOutput;
     }
 
     private static GitCommandResult RunGitResult(
         string workingDirectory,
         GitCommandSettings? settings,
-        params string[] arguments)
+        params string[] arguments
+    )
     {
         return RunGitCommand(workingDirectory, settings, GitDryRunMode.None, arguments);
     }
@@ -90,17 +119,31 @@ public static partial class GitExtensions
         return new GitCommandResult(
             resultList.All(result => result.Succeeded),
             resultList.FirstOrDefault(result => !result.Succeeded)?.ExitCode ?? 0,
-            string.Join(Environment.NewLine, resultList.Select(result => result.StandardOutput).Where(output => !string.IsNullOrEmpty(output))),
-            string.Join(Environment.NewLine, resultList.Select(result => result.StandardError).Where(error => !string.IsNullOrEmpty(error))));
+            string.Join(
+                Environment.NewLine,
+                resultList
+                    .Select(result => result.StandardOutput)
+                    .Where(output => !string.IsNullOrEmpty(output))
+            ),
+            string.Join(
+                Environment.NewLine,
+                resultList
+                    .Select(result => result.StandardError)
+                    .Where(error => !string.IsNullOrEmpty(error))
+            )
+        );
     }
 
     private enum GitDryRunMode
     {
         None,
-        Supported
+        Supported,
     }
 
-    private static IReadOnlyList<string> GetRunDirectories(string workingDirectory, GitCommandRunType runType)
+    private static IReadOnlyList<string> GetRunDirectories(
+        string workingDirectory,
+        GitCommandRunType runType
+    )
     {
         var parentDirectory = Path.GetFullPath(workingDirectory);
         var directories = new List<string>();
@@ -143,9 +186,15 @@ public static partial class GitExtensions
                 currentDirectory,
                 dryRun: false,
                 GitDryRunMode.None,
-                new[] { "config", "--file", ".gitmodules", "--get-regexp", "path" });
+                new[] { "config", "--file", ".gitmodules", "--get-regexp", "path" }
+            );
 
-            foreach (var path in paths.StandardOutput.Split(new[] { "\r\n", "\n" }, StringSplitOptions.RemoveEmptyEntries))
+            foreach (
+                var path in paths.StandardOutput.Split(
+                    new[] { "\r\n", "\n" },
+                    StringSplitOptions.RemoveEmptyEntries
+                )
+            )
             {
                 var separatorIndex = path.IndexOfAny(new[] { ' ', '\t' });
                 if (separatorIndex < 0)
@@ -154,7 +203,8 @@ public static partial class GitExtensions
                 }
 
                 var submoduleDirectory = Path.GetFullPath(
-                    Path.Combine(currentDirectory, path[(separatorIndex + 1)..].Trim()));
+                    Path.Combine(currentDirectory, path[(separatorIndex + 1)..].Trim())
+                );
                 if (Directory.Exists(submoduleDirectory))
                 {
                     directories.Add(submoduleDirectory);

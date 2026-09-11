@@ -2,7 +2,10 @@ namespace TJC.GitExtensions;
 
 public static partial class GitExtensions
 {
-    public static string[] GetChangesList(string workingDirectory = ".", GitCommandSettings? settings = null)
+    public static string[] GetChangesList(
+        string workingDirectory = ".",
+        GitCommandSettings? settings = null
+    )
     {
         var output = RunGit(workingDirectory, settings, "status", "--short");
         return string.IsNullOrEmpty(output)

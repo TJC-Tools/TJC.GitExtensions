@@ -2,7 +2,11 @@ namespace TJC.GitExtensions;
 
 public static partial class GitExtensions
 {
-    public static string[] GetTagList(string? searchPattern = null, string workingDirectory = ".", GitCommandSettings? settings = null)
+    public static string[] GetTagList(
+        string? searchPattern = null,
+        string workingDirectory = ".",
+        GitCommandSettings? settings = null
+    )
     {
         var arguments = searchPattern is null
             ? new[] { "tag", "--list" }
@@ -10,7 +14,11 @@ public static partial class GitExtensions
         return SplitLines(RunGit(workingDirectory, settings, arguments));
     }
 
-    public static GitCommandResult CreateTag(string tag, string workingDirectory = ".", GitCommandSettings? settings = null)
+    public static GitCommandResult CreateTag(
+        string tag,
+        string workingDirectory = ".",
+        GitCommandSettings? settings = null
+    )
     {
         return RunGitResult(workingDirectory, settings, "tag", tag);
     }

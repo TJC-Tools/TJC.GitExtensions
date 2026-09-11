@@ -18,7 +18,9 @@ namespace TJC.GitExtensions.Tests
 
             var branches = GitExtensions.GetBranchList(repository.Path);
             Assert.IsTrue(branches.Any(branch => branch.Name == "work" && branch.IsCurrent));
-            Assert.IsTrue(branches.Any(branch => branch.Name == initialBranch && !branch.IsCurrent));
+            Assert.IsTrue(
+                branches.Any(branch => branch.Name == initialBranch && !branch.IsCurrent)
+            );
 
             GitExtensions.Checkout(initialBranch, repository.Path);
             Assert.AreEqual(initialBranch, GitExtensions.GetBranchName(repository.Path));
