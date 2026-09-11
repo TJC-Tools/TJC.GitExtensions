@@ -47,6 +47,22 @@ namespace TJC.GitExtensions.Tests
             Run("branch", "--set-upstream-to", branch);
         }
 
+        public string CreateSubmodule(string name)
+        {
+            var submodulePath = System.IO.Path.Combine(Path, name);
+            Directory.CreateDirectory(submodulePath);
+            RunAt(submodulePath, "init");
+            RunAt(submodulePath, "config", "user.email", "tests@example.com");
+            RunAt(submodulePath, "config", "user.name", "Tests");
+            File.WriteAllText(System.IO.Path.Combine(submodulePath, "submodule.txt"), "initial");
+            RunAt(submodulePath, "add", ".");
+            RunAt(submodulePath, "commit", "-m", "initial");
+            File.WriteAllText(
+                System.IO.Path.Combine(Path, ".gitmodules"),
+                $"[submodule \"{name}\"]{Environment.NewLine}\tpath = {name}{Environment.NewLine}\turl = https://example.com/{name}.git{Environment.NewLine}");
+            return submodulePath;
+        }
+
         public void Dispose()
         {
             foreach (var file in Directory.EnumerateFiles(Path, "*", SearchOption.AllDirectories))
@@ -59,12 +75,17 @@ namespace TJC.GitExtensions.Tests
 
         private void Run(params string[] arguments)
         {
+            RunAt(Path, arguments);
+        }
+
+        private static void RunAt(string workingDirectory, params string[] arguments)
+        {
             using var process = new Process
             {
                 StartInfo = new ProcessStartInfo
                 {
                     FileName = "git",
-                    WorkingDirectory = Path,
+                    WorkingDirectory = workingDirectory,
                     UseShellExecute = false,
                     RedirectStandardError = true,
                     RedirectStandardOutput = true,

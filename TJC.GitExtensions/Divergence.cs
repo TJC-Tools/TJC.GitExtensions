@@ -2,20 +2,21 @@ namespace TJC.GitExtensions;
 
 public static partial class GitExtensions
 {
-    public static int GetBehindCount(string workingDirectory = ".")
+    public static int GetBehindCount(string workingDirectory = ".", GitCommandSettings? settings = null)
     {
-        return GetDivergenceCounts(workingDirectory).Behind;
+        return GetDivergenceCounts(workingDirectory, settings).Behind;
     }
 
-    public static int GetAheadCount(string workingDirectory = ".")
+    public static int GetAheadCount(string workingDirectory = ".", GitCommandSettings? settings = null)
     {
-        return GetDivergenceCounts(workingDirectory).Ahead;
+        return GetDivergenceCounts(workingDirectory, settings).Ahead;
     }
 
-    private static (int Ahead, int Behind) GetDivergenceCounts(string workingDirectory)
+    private static (int Ahead, int Behind) GetDivergenceCounts(string workingDirectory, GitCommandSettings? settings)
     {
         var counts = RunGit(
             workingDirectory,
+            settings,
             "rev-list",
             "--left-right",
             "--count",

@@ -2,9 +2,9 @@ namespace TJC.GitExtensions;
 
 public static partial class GitExtensions
 {
-    public static void Push(string workingDirectory = ".")
+    public static void Push(string workingDirectory = ".", GitCommandSettings? settings = null)
     {
-        RunGit(workingDirectory, "push");
-        RunGit(workingDirectory, "push", "--tags");
+        RunGit(workingDirectory, settings, "push");
+        RunGit(workingDirectory, settings, "push", "--tags");
     }
 }
