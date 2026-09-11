@@ -68,8 +68,8 @@ namespace TJC.GitExtensions.Tests
                     UseShellExecute = false,
                     RedirectStandardError = true,
                     RedirectStandardOutput = true,
-                    CreateNoWindow = true
-                }
+                    CreateNoWindow = true,
+                },
             };
 
             foreach (var argument in arguments)

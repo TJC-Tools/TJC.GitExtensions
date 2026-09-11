@@ -15,8 +15,8 @@ public static partial class GitExtensions
                 RedirectStandardOutput = true,
                 RedirectStandardError = true,
                 UseShellExecute = false,
-                CreateNoWindow = true
-            }
+                CreateNoWindow = true,
+            },
         };
 
         foreach (var argument in arguments)
@@ -32,7 +32,8 @@ public static partial class GitExtensions
         if (process.ExitCode != 0)
         {
             throw new InvalidOperationException(
-                $"git {string.Join(' ', arguments)} failed: {error.Trim()}");
+                $"git {string.Join(' ', arguments)} failed: {error.Trim()}"
+            );
         }
 
         return output.TrimEnd();

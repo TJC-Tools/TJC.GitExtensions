@@ -19,12 +19,15 @@ public static partial class GitExtensions
             "rev-list",
             "--left-right",
             "--count",
-            "HEAD...@{upstream}");
+            "HEAD...@{upstream}"
+        );
         var values = counts.Split('\t', StringSplitOptions.RemoveEmptyEntries);
 
-        if (values.Length != 2 ||
-            !int.TryParse(values[0], out var ahead) ||
-            !int.TryParse(values[1], out var behind))
+        if (
+            values.Length != 2
+            || !int.TryParse(values[0], out var ahead)
+            || !int.TryParse(values[1], out var behind)
+        )
         {
             throw new InvalidOperationException($"Unexpected git divergence output: {counts}");
         }

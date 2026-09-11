@@ -7,6 +7,8 @@ public static partial class GitExtensions
         var output = RunGit(workingDirectory, "status", "--short");
         return string.IsNullOrEmpty(output)
             ? Array.Empty<string>()
-            : output.Split(new[] { "\r\n", "\n" }, StringSplitOptions.RemoveEmptyEntries);
+            : output.Split(separator, StringSplitOptions.RemoveEmptyEntries);
     }
+
+    private static readonly string[] separator = new[] { "\r\n", "\n" };
 }

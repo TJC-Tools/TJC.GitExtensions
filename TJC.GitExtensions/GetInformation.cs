@@ -10,7 +10,8 @@ public static partial class GitExtensions
             "--tags",
             "--always",
             "--long",
-            "--abbrev=40");
+            "--abbrev=40"
+        );
         var status = RunGit(workingDirectory, "status", "--short");
         var description = ParseDescription(describe);
 
@@ -22,8 +23,7 @@ public static partial class GitExtensions
             Patch = GetVersionPart(description.VersionMatch, "patch"),
             IsDirty = !string.IsNullOrWhiteSpace(status),
             CommitHash = description.CommitHash,
-            DistanceToLatestTag = description.DistanceToLatestTag
+            DistanceToLatestTag = description.DistanceToLatestTag,
         };
     }
-
 }

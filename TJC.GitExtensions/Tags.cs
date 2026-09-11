@@ -10,6 +10,8 @@ public static partial class GitExtensions
         return SplitLines(RunGit(workingDirectory, arguments));
     }
 
+    private static readonly string[] separator = new[] { "\r\n", "\n" };
+
     public static void CreateTag(string tag, string workingDirectory = ".")
     {
         RunGit(workingDirectory, "tag", tag);
@@ -19,6 +21,6 @@ public static partial class GitExtensions
     {
         return string.IsNullOrEmpty(output)
             ? Array.Empty<string>()
-            : output.Split(new[] { "\r\n", "\n" }, StringSplitOptions.RemoveEmptyEntries);
+            : output.Split(separator, StringSplitOptions.RemoveEmptyEntries);
     }
 }
