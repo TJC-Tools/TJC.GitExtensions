@@ -2,7 +2,7 @@ namespace TJC.GitExtensions;
 
 public static partial class GitExtensions
 {
-    public static void Commit(string message, string workingDirectory = ".", GitCommandSettings? settings = null)
+    public static GitCommandResult Commit(string message, string workingDirectory = ".", GitCommandSettings? settings = null)
     {
         settings ??= new GitCommandSettings();
         var directories = GetRunDirectories(workingDirectory, settings.RunType);
@@ -14,18 +14,16 @@ public static partial class GitExtensions
 
         if (settings.DryRun)
         {
-            foreach (var directory in directories)
-            {
-                RunGit(directory, singleRepositorySettings, "commit", "--all", "-m", message);
-            }
-
-            return;
+            return RunGitCommand(workingDirectory, settings, GitDryRunMode.Supported, "commit", "--all", "-m", message);
         }
 
+        var results = new List<GitCommandResult>();
         foreach (var directory in directories.AsEnumerable().Reverse())
         {
             RunGit(directory, singleRepositorySettings, "add", "--all");
-            RunGit(directory, singleRepositorySettings, "commit", "-m", message);
+            results.Add(RunGitResult(directory, singleRepositorySettings, "commit", "-m", message));
         }
+
+        return CombineResults(results);
     }
 }

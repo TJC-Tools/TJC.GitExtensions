@@ -6,23 +6,28 @@ public static partial class GitExtensions
 {
     private static string RunGit(string workingDirectory, params string[] arguments)
     {
-        return RunGit(workingDirectory, settings: null, arguments);
+        return RunGitCommand(workingDirectory, settings: null, GitDryRunMode.None, arguments).StandardOutput;
     }
 
-    private static string RunGit(
+    private static GitCommandResult RunGitCommand(
         string workingDirectory,
         GitCommandSettings? settings,
+        GitDryRunMode dryRunMode = GitDryRunMode.None,
         params string[] arguments)
     {
         settings ??= new GitCommandSettings();
         var directories = GetRunDirectories(workingDirectory, settings.RunType);
-        var outputs = directories.Select(directory => RunGitOnce(directory, settings.DryRun, arguments));
-        return string.Join(Environment.NewLine, outputs.Where(output => !string.IsNullOrEmpty(output)));
+        var results = directories.Select(directory => RunGitOnce(directory, settings.DryRun, dryRunMode, arguments));
+        return CombineResults(results);
     }
 
-    private static string RunGitOnce(string workingDirectory, bool dryRun, string[] arguments)
+    private static GitCommandResult RunGitOnce(
+        string workingDirectory,
+        bool dryRun,
+        GitDryRunMode dryRunMode,
+        string[] arguments)
     {
-        var commandArguments = dryRun
+        var commandArguments = dryRun && dryRunMode == GitDryRunMode.Supported
             ? arguments.Take(1).Concat(new[] { "--dry-run" }).Concat(arguments.Skip(1)).ToArray()
             : arguments;
         using var process = new Process
@@ -48,13 +53,51 @@ public static partial class GitExtensions
         var error = process.StandardError.ReadToEnd();
         process.WaitForExit();
 
-        if (process.ExitCode != 0)
-        {
-            throw new InvalidOperationException(
-                $"git {string.Join(' ', commandArguments)} failed: {error.Trim()}");
-        }
+        var result = new GitCommandResult(
+            process.ExitCode == 0,
+            process.ExitCode,
+            output.TrimEnd(),
+            error.TrimEnd());
+        if (!result.Succeeded)
+            throw new InvalidOperationException($"git {string.Join(' ', commandArguments)} failed: {result.StandardError}");
+        return result;
+    }
 
-        return output.TrimEnd();
+    private static string RunGitOnce(string workingDirectory, string[] arguments)
+    {
+        return RunGitOnce(workingDirectory, dryRun: false, GitDryRunMode.None, arguments).StandardOutput;
+    }
+
+    private static string RunGit(
+        string workingDirectory,
+        GitCommandSettings? settings,
+        params string[] arguments)
+    {
+        return RunGitCommand(workingDirectory, settings, GitDryRunMode.None, arguments).StandardOutput;
+    }
+
+    private static GitCommandResult RunGitResult(
+        string workingDirectory,
+        GitCommandSettings? settings,
+        params string[] arguments)
+    {
+        return RunGitCommand(workingDirectory, settings, GitDryRunMode.None, arguments);
+    }
+
+    private static GitCommandResult CombineResults(IEnumerable<GitCommandResult> results)
+    {
+        var resultList = results.ToArray();
+        return new GitCommandResult(
+            resultList.All(result => result.Succeeded),
+            resultList.FirstOrDefault(result => !result.Succeeded)?.ExitCode ?? 0,
+            string.Join(Environment.NewLine, resultList.Select(result => result.StandardOutput).Where(output => !string.IsNullOrEmpty(output))),
+            string.Join(Environment.NewLine, resultList.Select(result => result.StandardError).Where(error => !string.IsNullOrEmpty(error))));
+    }
+
+    private enum GitDryRunMode
+    {
+        None,
+        Supported
     }
 
     private static IReadOnlyList<string> GetRunDirectories(string workingDirectory, GitCommandRunType runType)
@@ -99,9 +142,10 @@ public static partial class GitExtensions
             var paths = RunGitOnce(
                 currentDirectory,
                 dryRun: false,
+                GitDryRunMode.None,
                 new[] { "config", "--file", ".gitmodules", "--get-regexp", "path" });
 
-            foreach (var path in paths.Split(new[] { "\r\n", "\n" }, StringSplitOptions.RemoveEmptyEntries))
+            foreach (var path in paths.StandardOutput.Split(new[] { "\r\n", "\n" }, StringSplitOptions.RemoveEmptyEntries))
             {
                 var separatorIndex = path.IndexOfAny(new[] { ' ', '\t' });
                 if (separatorIndex < 0)

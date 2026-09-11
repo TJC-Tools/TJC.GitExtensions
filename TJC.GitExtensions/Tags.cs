@@ -10,9 +10,9 @@ public static partial class GitExtensions
         return SplitLines(RunGit(workingDirectory, settings, arguments));
     }
 
-    public static void CreateTag(string tag, string workingDirectory = ".", GitCommandSettings? settings = null)
+    public static GitCommandResult CreateTag(string tag, string workingDirectory = ".", GitCommandSettings? settings = null)
     {
-        RunGit(workingDirectory, settings, "tag", tag);
+        return RunGitResult(workingDirectory, settings, "tag", tag);
     }
 
     private static string[] SplitLines(string output)
