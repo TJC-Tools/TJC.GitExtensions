@@ -4,13 +4,9 @@ namespace TJC.GitExtensions;
 
 public static partial class GitExtensions
 {
-    private static readonly Regex DescribeWithTag = new(
-        "^(?<tag>.+)-(?<distance>[0-9]+)-g(?<hash>[0-9a-fA-F]+)$",
-        RegexOptions.Compiled | RegexOptions.CultureInvariant);
+    private static readonly Regex DescribeWithTag = MyRegex();
 
-    private static readonly Regex Version = new(
-        "^[vV]?(?<major>[0-9]+)\\.(?<minor>[0-9]+)\\.(?<patch>[0-9]+)(?:[-+].*)?$",
-        RegexOptions.Compiled | RegexOptions.CultureInvariant);
+    private static readonly Regex Version = MyRegex1();
 
     private static GitDescription ParseDescription(string describe)
     {
@@ -21,12 +17,10 @@ public static partial class GitExtensions
         return new GitDescription
         {
             VersionMatch = versionMatch,
-            CommitHash = describeMatch.Success
-                ? describeMatch.Groups["hash"].Value
-                : describe,
+            CommitHash = describeMatch.Success ? describeMatch.Groups["hash"].Value : describe,
             DistanceToLatestTag = describeMatch.Success
                 ? int.Parse(describeMatch.Groups["distance"].Value)
-                : null
+                : null,
         };
     }
 
@@ -45,4 +39,9 @@ public static partial class GitExtensions
 
         public int? DistanceToLatestTag { get; init; }
     }
+
+    [GeneratedRegex("^(?<tag>.+)-(?<distance>[0-9]+)-g(?<hash>[0-9a-fA-F]+)$", RegexOptions.Compiled | RegexOptions.CultureInvariant)]
+    private static partial Regex MyRegex();
+    [GeneratedRegex("^[vV]?(?<major>[0-9]+)\\.(?<minor>[0-9]+)\\.(?<patch>[0-9]+)(?:[-+].*)?$", RegexOptions.Compiled | RegexOptions.CultureInvariant)]
+    private static partial Regex MyRegex1();
 }
