@@ -59,7 +59,8 @@ namespace TJC.GitExtensions.Tests
             RunAt(submodulePath, "commit", "-m", "initial");
             File.WriteAllText(
                 System.IO.Path.Combine(Path, ".gitmodules"),
-                $"[submodule \"{name}\"]{Environment.NewLine}\tpath = {name}{Environment.NewLine}\turl = https://example.com/{name}.git{Environment.NewLine}");
+                $"[submodule \"{name}\"]{Environment.NewLine}\tpath = {name}{Environment.NewLine}\turl = https://example.com/{name}.git{Environment.NewLine}"
+            );
             return submodulePath;
         }
 
@@ -89,8 +90,8 @@ namespace TJC.GitExtensions.Tests
                     UseShellExecute = false,
                     RedirectStandardError = true,
                     RedirectStandardOutput = true,
-                    CreateNoWindow = true
-                }
+                    CreateNoWindow = true,
+                },
             };
 
             foreach (var argument in arguments)

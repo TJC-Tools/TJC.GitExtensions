@@ -4,4 +4,5 @@ public sealed record GitBranchInfo(
     string Name,
     bool IsCurrent,
     bool IsRemote,
-    string? TrackingBranch);
+    string? TrackingBranch
+);
