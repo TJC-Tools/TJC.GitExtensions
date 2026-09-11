@@ -40,8 +40,15 @@ public static partial class GitExtensions
         public int? DistanceToLatestTag { get; init; }
     }
 
-    [GeneratedRegex("^(?<tag>.+)-(?<distance>[0-9]+)-g(?<hash>[0-9a-fA-F]+)$", RegexOptions.Compiled | RegexOptions.CultureInvariant)]
+    [GeneratedRegex(
+        "^(?<tag>.+)-(?<distance>[0-9]+)-g(?<hash>[0-9a-fA-F]+)$",
+        RegexOptions.Compiled | RegexOptions.CultureInvariant
+    )]
     private static partial Regex MyRegex();
-    [GeneratedRegex("^[vV]?(?<major>[0-9]+)\\.(?<minor>[0-9]+)\\.(?<patch>[0-9]+)(?:[-+].*)?$", RegexOptions.Compiled | RegexOptions.CultureInvariant)]
+
+    [GeneratedRegex(
+        "^[vV]?(?<major>[0-9]+)\\.(?<minor>[0-9]+)\\.(?<patch>[0-9]+)(?:[-+].*)?$",
+        RegexOptions.Compiled | RegexOptions.CultureInvariant
+    )]
     private static partial Regex MyRegex1();
 }
