@@ -39,11 +39,13 @@ namespace TJC.GitExtensions.Tests
             File.AppendAllText(Path.Combine(repository.Path, "file.txt"), "parent change");
             File.AppendAllText(Path.Combine(submodulePath, "submodule.txt"), "child change");
 
-            GitExtensions.Commit(
+            var result = GitExtensions.Commit(
                 "scoped commit",
                 repository.Path,
                 new GitCommandSettings { RunType = GitCommandRunType.ParentAndSubmodules });
 
+            Assert.IsTrue(result.Succeeded);
+            Assert.AreEqual(0, result.ExitCode);
             Assert.IsFalse(GitExtensions.GetInformation(repository.Path).IsDirty);
             Assert.IsFalse(GitExtensions.GetInformation(submodulePath).IsDirty);
         }

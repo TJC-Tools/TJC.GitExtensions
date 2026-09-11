@@ -2,8 +2,8 @@ namespace TJC.GitExtensions;
 
 public static partial class GitExtensions
 {
-    public static void Fetch(string workingDirectory = ".", GitCommandSettings? settings = null)
+    public static GitCommandResult Fetch(string workingDirectory = ".", GitCommandSettings? settings = null)
     {
-        RunGit(workingDirectory, settings, "fetch");
+        return RunGitCommand(workingDirectory, settings, GitDryRunMode.Supported, "fetch");
     }
 }
