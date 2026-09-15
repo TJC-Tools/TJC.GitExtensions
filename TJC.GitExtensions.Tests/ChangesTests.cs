@@ -14,10 +14,7 @@ namespace TJC.GitExtensions.Tests
             repository.Commit("initial");
             File.AppendAllText(Path.Combine(repository.Path, "file.txt"), "changed");
 
-            CollectionAssert.AreEqual(
-                expected,
-                GitExtensions.GetChangesList(repository.Path)
-            );
+            CollectionAssert.AreEqual(expected, GitExtensions.GetChangesList(repository.Path));
         }
     }
 }
