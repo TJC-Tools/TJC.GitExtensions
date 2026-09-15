@@ -2,7 +2,6 @@ using TJC.GitExtensions;
 
 namespace TJC.GitExtensions.Tests
 {
-    
     public class BranchTests
     {
         [Fact]
@@ -17,10 +16,8 @@ namespace TJC.GitExtensions.Tests
             Assert.Equal("work", GitExtensions.GetBranchName(repository.Path));
 
             var branches = GitExtensions.GetBranchList(repository.Path);
-            Assert.True(branches.Any(branch => branch.Name == "work" && branch.IsCurrent));
-            Assert.True(
-                branches.Any(branch => branch.Name == initialBranch && !branch.IsCurrent)
-            );
+            Assert.Contains(branches, branch => branch.Name == "work" && branch.IsCurrent);
+            Assert.Contains(branches, branch => branch.Name == initialBranch && !branch.IsCurrent);
 
             GitExtensions.Checkout(initialBranch, repository.Path);
             Assert.Equal(initialBranch, GitExtensions.GetBranchName(repository.Path));

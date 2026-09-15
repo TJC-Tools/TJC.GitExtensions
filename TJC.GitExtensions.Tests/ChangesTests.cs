@@ -2,7 +2,6 @@ using TJC.GitExtensions;
 
 namespace TJC.GitExtensions.Tests
 {
-    
     public class ChangesTests
     {
         private static readonly string[] expected = new[] { " M file.txt" };
