@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.0] - 2026-09-15
+
 ## [0.2.0] - 2026-09-15
 
 ### Changed
@@ -23,7 +25,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Optional command settings for dry runs and running commands across parent repositories and submodules.
 - Git command result, branch info, and smart dry run.
 
-[Unreleased]: https://github.com/TJC-Tools/TJC.GitExtensions/compare/v0.2.0...HEAD
+[Unreleased]: https://github.com/TJC-Tools/TJC.GitExtensions/compare/v0.3.0...HEAD
+
+[0.3.0]: https://github.com/TJC-Tools/TJC.GitExtensions/compare/v0.2.0...v0.3.0
 
 [0.2.0]: https://github.com/TJC-Tools/TJC.GitExtensions/compare/v0.1.0...v0.2.0
 
