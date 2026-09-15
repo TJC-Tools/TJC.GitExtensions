@@ -3,7 +3,6 @@ using TJC.GitExtensions;
 
 namespace TJC.GitExtensions.Tests;
 
-
 public class RemoteCommandTests
 {
     [Fact]
@@ -26,7 +25,9 @@ public class RemoteCommandTests
         }
         finally
         {
-            foreach (var file in Directory.EnumerateFiles(remotePath, "*", SearchOption.AllDirectories))
+            foreach (
+                var file in Directory.EnumerateFiles(remotePath, "*", SearchOption.AllDirectories)
+            )
                 File.SetAttributes(file, FileAttributes.Normal);
             Directory.Delete(remotePath, recursive: true);
         }
