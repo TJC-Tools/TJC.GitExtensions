@@ -47,6 +47,17 @@ namespace TJC.GitExtensions.Tests
             Run("branch", "--set-upstream-to", branch);
         }
 
+        public void AddRemote(string name, string remotePath)
+        {
+            Run("remote", "add", name, remotePath);
+        }
+
+        public void ConfigureTrackingBranch(string branch, string remote)
+        {
+            Run("config", $"branch.{branch}.remote", remote);
+            Run("config", $"branch.{branch}.merge", $"refs/heads/{branch}");
+        }
+
         public string CreateSubmodule(string name)
         {
             var submodulePath = System.IO.Path.Combine(Path, name);
