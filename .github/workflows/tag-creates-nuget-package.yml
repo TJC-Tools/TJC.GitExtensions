@@ -34,7 +34,7 @@ jobs:
         with:
           user: ${{ secrets.TJC_NUGET_USER }}
 
-      - name: Setup .NET 8.0
+      - name: Setup .NET 10.0
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: "10.0.x"
@@ -69,11 +69,11 @@ jobs:
       - name: List Files (Release)
         run: ls ${{ github.event.repository.name }}/bin/Release
 
-      - name: List Files (net8.0)
-        run: ls ${{ github.event.repository.name }}/bin/Release/net8.0
+      - name: List Files (net10.0)
+        run: ls ${{ github.event.repository.name }}/bin/Release/net10.0
 
       - name: List Files (publish)
-        run: ls ${{ github.event.repository.name }}/bin/Release/net8.0/publish
+        run: ls ${{ github.event.repository.name }}/bin/Release/net10.0/publish
 
       - name: Push Package to NuGet & GitHub Packages
         shell: powershell
@@ -91,7 +91,7 @@ jobs:
         with:
           name: ${{ github.event.repository.name }} ${{ steps.getVer.outputs.result }}
           tag: ${{ github.ref_name }}
-          artifacts: "${{ github.event.repository.name }}/bin/Release/*.nupkg,${{ github.event.repository.name }}/bin/Release/net8.0/publish/**.dll,${{ github.event.repository.name }}/bin/Release/net8.0/publish/**.pdb,${{ github.event.repository.name }}/bin/Release/net8.0/publish/**.xml"
+          artifacts: "${{ github.event.repository.name }}/bin/Release/*.nupkg,${{ github.event.repository.name }}/bin/Release/net10.0/publish/**.dll,${{ github.event.repository.name }}/bin/Release/net10.0/publish/**.pdb,${{ github.event.repository.name }}/bin/Release/net10.0/publish/**.xml"
           generateReleaseNotes: true
 
       - name: ${{ format('Published NuGet Package [{0}]', steps.getVer.outputs.result) }}
