@@ -2,7 +2,6 @@ using TJC.GitExtensions;
 
 namespace TJC.GitExtensions.Tests
 {
-    
     public class TagTests
     {
         [Fact]
@@ -13,10 +12,7 @@ namespace TJC.GitExtensions.Tests
 
             GitExtensions.CreateTag("v1.0.0", repository.Path);
 
-            Assert.Contains(
-                "v1.0.0",
-                GitExtensions.GetTagList(workingDirectory: repository.Path)
-            );
+            Assert.Contains("v1.0.0", GitExtensions.GetTagList(workingDirectory: repository.Path));
         }
     }
 }
