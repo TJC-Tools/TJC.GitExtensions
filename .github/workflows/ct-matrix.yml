@@ -55,7 +55,7 @@ jobs:
       fail-fast: false
       matrix:
         solution: [Testing.sln]
-        dotnet-version: ["8.0.x"]
+        dotnet-version: ["10.0.x"]
 
     steps:
       - name: Checkout
