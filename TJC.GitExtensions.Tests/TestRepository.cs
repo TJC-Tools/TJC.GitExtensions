@@ -112,7 +112,7 @@ namespace TJC.GitExtensions.Tests
 
             process.Start();
             process.WaitForExit();
-            Assert.AreEqual(0, process.ExitCode, process.StandardError.ReadToEnd());
+            Assert.True(process.ExitCode == 0, process.StandardError.ReadToEnd());
         }
     }
 }

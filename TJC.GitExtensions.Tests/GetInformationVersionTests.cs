@@ -2,10 +2,10 @@ using TJC.GitExtensions;
 
 namespace TJC.GitExtensions.Tests
 {
-    [TestClass]
+    
     public class GetInformationVersionTests
     {
-        [TestMethod]
+        [Fact]
         public void GetInformation_ReturnsVersionAndDistanceForTaggedRepository()
         {
             using var repository = TestRepository.Create();
@@ -15,16 +15,16 @@ namespace TJC.GitExtensions.Tests
 
             var information = GitExtensions.GetInformation(repository.Path);
 
-            Assert.IsTrue(information.IsVersionNumber);
-            Assert.AreEqual(1, information.Major);
-            Assert.AreEqual(2, information.Minor);
-            Assert.AreEqual(3, information.Patch);
-            Assert.AreEqual(1, information.DistanceToLatestTag);
-            Assert.AreEqual(40, information.CommitHash.Length);
-            Assert.IsFalse(information.IsDirty);
+            Assert.True(information.IsVersionNumber);
+            Assert.Equal(1, information.Major);
+            Assert.Equal(2, information.Minor);
+            Assert.Equal(3, information.Patch);
+            Assert.Equal(1, information.DistanceToLatestTag);
+            Assert.Equal(40, information.CommitHash.Length);
+            Assert.False(information.IsDirty);
         }
 
-        [TestMethod]
+        [Fact]
         public void GetInformation_ReturnsHashWithoutVersionWhenNoTagExists()
         {
             using var repository = TestRepository.Create();
@@ -32,12 +32,12 @@ namespace TJC.GitExtensions.Tests
 
             var information = GitExtensions.GetInformation(repository.Path);
 
-            Assert.IsFalse(information.IsVersionNumber);
-            Assert.IsNull(information.Major);
-            Assert.IsNull(information.Minor);
-            Assert.IsNull(information.Patch);
-            Assert.IsNull(information.DistanceToLatestTag);
-            Assert.AreEqual(40, information.CommitHash.Length);
+            Assert.False(information.IsVersionNumber);
+            Assert.Null(information.Major);
+            Assert.Null(information.Minor);
+            Assert.Null(information.Patch);
+            Assert.Null(information.DistanceToLatestTag);
+            Assert.Equal(40, information.CommitHash.Length);
         }
     }
 }

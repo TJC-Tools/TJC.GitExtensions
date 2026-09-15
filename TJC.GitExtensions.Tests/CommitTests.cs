@@ -2,10 +2,10 @@ using TJC.GitExtensions;
 
 namespace TJC.GitExtensions.Tests
 {
-    [TestClass]
+    
     public class CommitTests
     {
-        [TestMethod]
+        [Fact]
         public void CommitStagesAllChanges()
         {
             using var repository = TestRepository.Create();
@@ -14,7 +14,7 @@ namespace TJC.GitExtensions.Tests
 
             GitExtensions.Commit("second", repository.Path);
 
-            Assert.IsFalse(GitExtensions.GetInformation(repository.Path).IsDirty);
+            Assert.False(GitExtensions.GetInformation(repository.Path).IsDirty);
         }
     }
 }

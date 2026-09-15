@@ -2,10 +2,10 @@ using TJC.GitExtensions;
 
 namespace TJC.GitExtensions.Tests
 {
-    [TestClass]
+    
     public class DivergenceTests
     {
-        [TestMethod]
+        [Fact]
         public void GetDivergenceCountsReturnsAheadAndBehindCommits()
         {
             using var repository = TestRepository.Create();
@@ -19,8 +19,8 @@ namespace TJC.GitExtensions.Tests
             repository.Checkout("work");
             repository.SetUpstream("base");
 
-            Assert.AreEqual(1, GitExtensions.GetAheadCount(repository.Path));
-            Assert.AreEqual(1, GitExtensions.GetBehindCount(repository.Path));
+            Assert.Equal(1, GitExtensions.GetAheadCount(repository.Path));
+            Assert.Equal(1, GitExtensions.GetBehindCount(repository.Path));
         }
     }
 }

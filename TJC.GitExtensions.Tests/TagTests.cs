@@ -2,10 +2,10 @@ using TJC.GitExtensions;
 
 namespace TJC.GitExtensions.Tests
 {
-    [TestClass]
+    
     public class TagTests
     {
-        [TestMethod]
+        [Fact]
         public void TagCommandsCreateAndListTags()
         {
             using var repository = TestRepository.Create();
@@ -13,9 +13,9 @@ namespace TJC.GitExtensions.Tests
 
             GitExtensions.CreateTag("v1.0.0", repository.Path);
 
-            CollectionAssert.Contains(
-                GitExtensions.GetTagList(workingDirectory: repository.Path),
-                "v1.0.0"
+            Assert.Contains(
+                "v1.0.0",
+                GitExtensions.GetTagList(workingDirectory: repository.Path)
             );
         }
     }

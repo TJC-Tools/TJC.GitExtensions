@@ -2,10 +2,10 @@ using TJC.GitExtensions;
 
 namespace TJC.GitExtensions.Tests
 {
-    [TestClass]
+    
     public class BranchTests
     {
-        [TestMethod]
+        [Fact]
         public void BranchCommandsReadAndChangeCurrentBranch()
         {
             using var repository = TestRepository.Create();
@@ -14,16 +14,16 @@ namespace TJC.GitExtensions.Tests
             repository.CreateBranch("work");
 
             GitExtensions.ChangeBranch("work", repository.Path);
-            Assert.AreEqual("work", GitExtensions.GetBranchName(repository.Path));
+            Assert.Equal("work", GitExtensions.GetBranchName(repository.Path));
 
             var branches = GitExtensions.GetBranchList(repository.Path);
-            Assert.IsTrue(branches.Any(branch => branch.Name == "work" && branch.IsCurrent));
-            Assert.IsTrue(
+            Assert.True(branches.Any(branch => branch.Name == "work" && branch.IsCurrent));
+            Assert.True(
                 branches.Any(branch => branch.Name == initialBranch && !branch.IsCurrent)
             );
 
             GitExtensions.Checkout(initialBranch, repository.Path);
-            Assert.AreEqual(initialBranch, GitExtensions.GetBranchName(repository.Path));
+            Assert.Equal(initialBranch, GitExtensions.GetBranchName(repository.Path));
         }
     }
 }

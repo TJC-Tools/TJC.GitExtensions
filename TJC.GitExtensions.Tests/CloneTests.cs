@@ -2,10 +2,10 @@ using TJC.GitExtensions;
 
 namespace TJC.GitExtensions.Tests
 {
-    [TestClass]
+    
     public class CloneTests
     {
-        [TestMethod]
+        [Fact]
         public void CloneCopiesRepository()
         {
             using var repository = TestRepository.Create();
@@ -16,8 +16,8 @@ namespace TJC.GitExtensions.Tests
             {
                 GitExtensions.Clone(repository.Path, clonePath);
 
-                Assert.IsTrue(File.Exists(Path.Combine(clonePath, "file.txt")));
-                Assert.AreEqual("initial", File.ReadAllText(Path.Combine(clonePath, "file.txt")));
+                Assert.True(File.Exists(Path.Combine(clonePath, "file.txt")));
+                Assert.Equal("initial", File.ReadAllText(Path.Combine(clonePath, "file.txt")));
             }
             finally
             {

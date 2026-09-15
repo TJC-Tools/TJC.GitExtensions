@@ -2,18 +2,18 @@ using TJC.GitExtensions;
 
 namespace TJC.GitExtensions.Tests
 {
-    [TestClass]
+    
     public class GitCommandSettingsTests
     {
-        [TestMethod]
+        [Fact]
         public void RunTypeUsesBinaryBackedValues()
         {
-            Assert.AreEqual(1, (int)GitCommandRunType.Parent);
-            Assert.AreEqual(2, (int)GitCommandRunType.Submodules);
-            Assert.AreEqual(3, (int)GitCommandRunType.ParentAndSubmodules);
+            Assert.Equal(1, (int)GitCommandRunType.Parent);
+            Assert.Equal(2, (int)GitCommandRunType.Submodules);
+            Assert.Equal(3, (int)GitCommandRunType.ParentAndSubmodules);
         }
 
-        [TestMethod]
+        [Fact]
         public void DryRunDoesNotCreateCommit()
         {
             using var repository = TestRepository.Create();
@@ -27,11 +27,11 @@ namespace TJC.GitExtensions.Tests
                 new GitCommandSettings { DryRun = true }
             );
 
-            Assert.AreEqual(initialHash, GitExtensions.GetInformation(repository.Path).CommitHash);
-            Assert.IsTrue(GitExtensions.GetInformation(repository.Path).IsDirty);
+            Assert.Equal(initialHash, GitExtensions.GetInformation(repository.Path).CommitHash);
+            Assert.True(GitExtensions.GetInformation(repository.Path).IsDirty);
         }
 
-        [TestMethod]
+        [Fact]
         public void ParentAndSubmodulesRunsCommandsInBothRepositories()
         {
             using var repository = TestRepository.Create();
@@ -46,10 +46,10 @@ namespace TJC.GitExtensions.Tests
                 new GitCommandSettings { RunType = GitCommandRunType.ParentAndSubmodules }
             );
 
-            Assert.IsTrue(result.Succeeded);
-            Assert.AreEqual(0, result.ExitCode);
-            Assert.IsFalse(GitExtensions.GetInformation(repository.Path).IsDirty);
-            Assert.IsFalse(GitExtensions.GetInformation(submodulePath).IsDirty);
+            Assert.True(result.Succeeded);
+            Assert.Equal(0, result.ExitCode);
+            Assert.False(GitExtensions.GetInformation(repository.Path).IsDirty);
+            Assert.False(GitExtensions.GetInformation(submodulePath).IsDirty);
         }
     }
 }

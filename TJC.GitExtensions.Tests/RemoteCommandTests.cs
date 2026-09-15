@@ -3,10 +3,10 @@ using TJC.GitExtensions;
 
 namespace TJC.GitExtensions.Tests;
 
-[TestClass]
+
 public class RemoteCommandTests
 {
-    [TestMethod]
+    [Fact]
     public void PushFetchAndPull_OperateAgainstLocalRemote()
     {
         using var repository = TestRepository.Create();
@@ -20,9 +20,9 @@ public class RemoteCommandTests
             repository.AddRemote("origin", remotePath);
             repository.ConfigureTrackingBranch(branch, "origin");
 
-            Assert.IsTrue(GitExtensions.Push(repository.Path).Succeeded);
-            Assert.IsTrue(GitExtensions.Fetch(repository.Path).Succeeded);
-            Assert.IsTrue(GitExtensions.Pull(repository.Path).Succeeded);
+            Assert.True(GitExtensions.Push(repository.Path).Succeeded);
+            Assert.True(GitExtensions.Fetch(repository.Path).Succeeded);
+            Assert.True(GitExtensions.Pull(repository.Path).Succeeded);
         }
         finally
         {
@@ -48,6 +48,6 @@ public class RemoteCommandTests
 
         process.Start();
         process.WaitForExit();
-        Assert.AreEqual(0, process.ExitCode);
+        Assert.Equal(0, process.ExitCode);
     }
 }

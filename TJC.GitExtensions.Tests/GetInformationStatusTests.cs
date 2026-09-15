@@ -2,10 +2,10 @@ using TJC.GitExtensions;
 
 namespace TJC.GitExtensions.Tests
 {
-    [TestClass]
+    
     public class GetInformationStatusTests
     {
-        [TestMethod]
+        [Fact]
         public void GetInformation_ReportsDirtyStatus()
         {
             using var repository = TestRepository.Create();
@@ -14,7 +14,7 @@ namespace TJC.GitExtensions.Tests
 
             var information = GitExtensions.GetInformation(repository.Path);
 
-            Assert.IsTrue(information.IsDirty);
+            Assert.True(information.IsDirty);
         }
     }
 }
