@@ -1,8 +1,8 @@
 # Creation of a version tag will trigger this workflow
 # A new release will be created from the tag
 ---
-name: Tag → Create Package
-run-name: Tag [${{ github.ref_name }}] → Create Package
+name: Tag â†’ Create Package
+run-name: Tag [${{ github.ref_name }}] â†’ Create Package
 
 on:
   push:
@@ -37,7 +37,7 @@ jobs:
       - name: Setup .NET 8.0
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: ["10.0.x"]
+          dotnet-version: "10.0.x"
 
       - name: Setup MSBuild
         uses: microsoft/setup-msbuild@v2
