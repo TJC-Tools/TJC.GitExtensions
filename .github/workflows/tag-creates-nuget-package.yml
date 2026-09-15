@@ -1,8 +1,8 @@
 # Creation of a version tag will trigger this workflow
 # A new release will be created from the tag
 ---
-name: Tag â†’ Create Package
-run-name: Tag [${{ github.ref_name }}] â†’ Create Package
+name: Tag → Create Package
+run-name: Tag [${{ github.ref_name }}] → Create Package
 
 on:
   push:
